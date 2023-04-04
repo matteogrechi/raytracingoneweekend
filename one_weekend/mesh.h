@@ -7,7 +7,7 @@
 class mesh : public hittable {
     public:
         mesh() {}
-        mesh(point3 point_A, point3 point_B, point3  point_C) : A(point_A), B(point_B), C(point_C) {};
+        mesh(point3 point_A, point3 point_B, point3  point_C, shared_ptr<material> m) : A(point_A), B(point_B), C(point_C), mat_ptr(m) {};
 
         virtual bool hit(const ray& r, double t_min, double t_max, hit_record& rec)
             const override;
@@ -16,6 +16,7 @@ class mesh : public hittable {
         point3 A;
         point3 B;
         point3 C;
+        shared_ptr<material> mat_ptr;
 };
 
 bool mesh::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
@@ -81,6 +82,8 @@ bool mesh::hit(const ray& r, double t_min, double t_max, hit_record& rec) const 
         vec3 outward_normal = unit_vector(cross(B_A,C_A));
         rec.set_face_normal(r, outward_normal);
 
+        rec.mat_ptr = mat_ptr;
+        
         return true;
     }
 
